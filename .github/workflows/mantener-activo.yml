@@ -1,11 +1,11 @@
 # Evita que Supabase (plan gratuito) pause el proyecto de prácticas por inactividad:
-# hace una consulta mínima cada 3 días (función ping, no lee ni escribe datos).
+# hace una consulta mínima todos los días (función ping, no lee ni escribe datos).
 # Mismo mecanismo que usa la plataforma del CFP 403.
 name: Mantener activo Supabase de prácticas
 
 on:
   schedule:
-    - cron: '0 12 */3 * *'
+    - cron: '17 12 * * *'
   workflow_dispatch: {}
 
 jobs:
