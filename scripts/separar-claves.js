@@ -14,6 +14,8 @@ vm.runInContext(fs.readFileSync(src, 'utf8'), ctx, { filename: src });
 const plain = (s) => String(s).replace(/<br>/g, ' ').replace(/<[^>]+>/g, '');
 const unq = (s) => s.replace(/&quot;/g, '"');
 const claves = {}, publicas = {};
+// PREV=<claves.json> (opcional): reusa el orden mezclado de las misiones «ordenar» que ya están en el servidor, para no cambiarlo
+const PREV = process.env.PREV ? JSON.parse(fs.readFileSync(process.env.PREV, 'utf8')) : {};
 for (const n of Object.keys(T.practicas)) {
   const p = JSON.parse(JSON.stringify(T.practicas[n])); const mis = [];
   p.missions.forEach((m, mi) => {
@@ -35,8 +37,10 @@ for (const n of Object.keys(T.practicas)) {
         mis.push({ t: 'tiles', max: need, items: m.items.map((x) => ({ f: x[2] ? 1 : 0, x: x[3] || '', rv: x[2] ? rv({ t: '<b>' + x[1] + '.</b> ' + x[3] }) : null })) });
         m.need = need; m.items = m.items.map((x) => [x[0], x[1]]); break; }
       case 'order': {
-        const k = m.steps.length, perm = []; for (let i = 0; i < k; i++) perm.push(i);
-        for (let i = k - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [perm[i], perm[j]] = [perm[j], perm[i]]; }
+        const k = m.steps.length; let perm = []; for (let i = 0; i < k; i++) perm.push(i);
+        const pv = PREV[n] && PREV[n].misiones && PREV[n].misiones[mi];
+        if (pv && pv.t === 'order' && Array.isArray(pv.rank) && pv.rank.length === k) perm = pv.rank.slice();
+        else for (let i = k - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [perm[i], perm[j]] = [perm[j], perm[i]]; }
         // perm[j] = lugar correcto del paso que se muestra en la posición j
         const rank = perm.slice(); const pubSteps = new Array(k); rank.forEach((r, j) => { pubSteps[j] = m.steps[r]; });
         mis.push({ t: 'order', max: 1, rank, why: m.why || '', rv: rv({ t: 'El orden correcto es:', ok: m.steps.map((x, i) => (i + 1) + '. ' + x).join(' · '), why: m.why || '' }) });

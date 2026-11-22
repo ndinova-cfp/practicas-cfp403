@@ -189,3 +189,7 @@ body.inicio .teacher-link{color:var(--muted)}
 .cdat{width:100%;border-collapse:collapse;font-size:14px}.cdat td{padding:6px 4px;border-bottom:1px solid var(--line)}.cdat td:last-child{text-align:right;font-family:ui-monospace,Consolas,monospace}
 .pitem .st.ok{color:#1c8a50;border-color:#1c8a50;background:var(--green-l)}
 .pitem .st.mal{color:#b97c0c;border-color:#b97c0c;background:var(--amber-l)}
+/* Dibujos de las consignas (SVG en la consigna o en la pregunta) */
+.fig{display:block;width:100%;max-width:380px;height:auto;margin:12px auto 2px}
+.card .fig{margin-top:6px}
+.opts button code,.q code{font-size:.9em;background:var(--bg);border-radius:5px;padding:1px 5px}
