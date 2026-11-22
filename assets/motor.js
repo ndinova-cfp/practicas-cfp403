@@ -123,7 +123,11 @@ var TYPES={};
 /* --- QUIZ --- */
 TYPES.quiz=function(m,z){var i=0,first,score=0,log=[],busy=0;
   function show(){var it=m.items[i];first=true;
-    var opts=it.opts.map(function(o,k){return '<button data-k="'+k+'">'+o+'</button>'}).join('');
+    // Las opciones se muestran mezcladas (salvo categorías en fila y Sí/No), así la correcta no queda siempre en el mismo lugar.
+    // Cada botón conserva su número original (data-k): la corrección, en el navegador o en el servidor, no cambia.
+    var ord=it.opts.map(function(o,k){return k});
+    if(!m.row&&!m.fijo&&ord.length>2){for(var j=ord.length-1;j>0;j--){var r=Math.floor(Math.random()*(j+1)),tmp=ord[j];ord[j]=ord[r];ord[r]=tmp}}
+    var opts=ord.map(function(k){return '<button data-k="'+k+'">'+it.opts[k]+'</button>'}).join('');
     z.innerHTML='<div class="card"><div class="counter">'+(i+1)+' de '+m.items.length+'</div><div class="bar"><b style="width:'+(i/m.items.length*100)+'%"></b></div>'+
     (it.ctx?'<div class="hint" style="margin-bottom:6px">'+it.ctx+'</div>':'')+(it.mock?it.mock:'')+'<div class="q">'+it.q+'</div><div class="opts'+(m.row?' row':'')+'">'+opts+'</div><div class="fb" id="f"></div><button class="btn" id="qn" style="display:none">Seguir</button></div>';
     z.querySelectorAll('.opts button').forEach(function(b){b.onclick=function(){var k=+b.dataset.k,f=$('#f');if(busy)return;busy=1;
